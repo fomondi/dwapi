@@ -61,6 +61,7 @@ using Dwapi.UploadManagement.Core.Interfaces.Services.Cbs;
 using Dwapi.UploadManagement.Core.Interfaces.Services.Dwh;
 using Dwapi.UploadManagement.Core.Packager.Cbs;
 using Dwapi.UploadManagement.Core.Packager.Dwh;
+using Dwapi.UploadManagement.Core.Services;
 using Dwapi.UploadManagement.Core.Services.Cbs;
 using Dwapi.UploadManagement.Core.Services.Dwh;
 using Dwapi.UploadManagement.Core.Services.Psmart;
@@ -78,10 +79,12 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using StructureMap;
 using Swashbuckle.AspNetCore.Swagger;
 using Z.Dapper.Plus;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Dwapi
 {
@@ -165,6 +168,8 @@ namespace Dwapi
             {
                 Log.Error(e, "Connections not Initialized");
             }
+
+            services.AddSingleton<IHostedService, BackgroundSendService>();
 
             services.AddTransient<ExtractsContext>();
             services.AddScoped<ICentralRegistryRepository, CentralRegistryRepository>();
