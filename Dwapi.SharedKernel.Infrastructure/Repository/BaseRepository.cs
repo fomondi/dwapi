@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Dwapi.SharedKernel.Enum;
 using MySql.Data.MySqlClient;
+using X.PagedList;
 
 namespace Dwapi.SharedKernel.Infrastructure.Repository
 {
@@ -43,7 +44,15 @@ namespace Dwapi.SharedKernel.Infrastructure.Repository
 
         public IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
         {
-            return DbSet.Where(predicate).AsNoTracking(); 
+            return DbSet.Where(predicate).AsNoTracking();
+        }
+
+        public Task<IPagedList<T>> GetAll(int? page, int pageSize, string sortField="", int? sortOrder=1)
+        {
+            var entities = DbSet.AsNoTracking()
+                .OrderBy(x => x.Id);
+
+            return entities.ToPagedListAsync(page ?? 1, pageSize);
         }
 
         public virtual void Create(T entity)
@@ -176,6 +185,26 @@ namespace Dwapi.SharedKernel.Infrastructure.Repository
         public Task<int> SaveChangesAsync()
         {
             return Context.SaveChangesAsync();
+        }
+
+        public void ExecCommand(string sql)
+        {
+            GetConnection().Execute(sql);
+        }
+
+        public TC ExecQuery<TC>(string sql)
+        {
+           return GetConnection().Query<TC>(sql).FirstOrDefault();
+        }
+
+        public IEnumerable<dynamic> ExecQueryMulti<dynamic>(string sql)
+        {
+            return GetConnection().Query<dynamic>(sql);
+
+        }
+        public Task<int> GetCount()
+        {
+            return DbSet.AsNoTracking().Select(x => x.Id).CountAsync();
         }
     }
 }

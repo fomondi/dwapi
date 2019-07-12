@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -81,6 +82,7 @@ using Dwapi.UploadManagement.Core.Interfaces.Services.Hts;
 using Dwapi.UploadManagement.Core.Packager.Cbs;
 using Dwapi.UploadManagement.Core.Packager.Dwh;
 using Dwapi.UploadManagement.Core.Packager.Hts;
+using Dwapi.UploadManagement.Core.Profiles;
 using Dwapi.UploadManagement.Core.Services.Cbs;
 using Dwapi.UploadManagement.Core.Services.Dwh;
 using Dwapi.UploadManagement.Core.Services.Hts;
@@ -132,7 +134,6 @@ namespace Dwapi
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             var assemblyNames = Assembly.GetEntryAssembly().GetReferencedAssemblies();
             List<Assembly> assemblies = new List<Assembly>();
             foreach (var assemblyName in assemblyNames)
@@ -144,6 +145,9 @@ namespace Dwapi
 
             services.AddResponseCompression(options =>
             {
+
+
+
                 options.Providers.Add<GzipCompressionProvider>();
                 options.EnableForHttps = true;
                 options.MimeTypes =
@@ -214,7 +218,6 @@ namespace Dwapi
                         x => x.MigrationsAssembly(typeof(ExtractsContext).GetTypeInfo().Assembly.GetName().Name)));
                     services.AddDbContext<UploadContext>(o => o.UseSqlServer(connectionString,
                         x => x.MigrationsAssembly(typeof(UploadContext).GetTypeInfo().Assembly.GetName().Name)));
-
                 }
             }
             catch (Exception e)
@@ -318,7 +321,6 @@ namespace Dwapi
             services.AddScoped<IDwhSendService, DwhSendService>();
             services.AddScoped<IDwhExtractSentServcie, DwhExtractSentServcie>();
 
-
             services.AddScoped<ITempHTSClientExtractRepository, TempHTSClientExtractRepository>();
             services.AddScoped<ITempHTSClientLinkageExtractRepository, TempHTSClientLinkageExtractRepository>();
             services.AddScoped<ITempHTSClientPartnerExtractRepository, TempHTSClientPartnerExtractRepository>();
@@ -359,6 +361,8 @@ namespace Dwapi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
+            Stopwatch stopWatch = Stopwatch.StartNew();
+
             //ServiceProvider = serviceProvider;
             app.UseResponseCompression();
             if (env.IsDevelopment())
@@ -407,10 +411,6 @@ namespace Dwapi
             EnsureMigrationOfContext<SettingsContext>(serviceProvider);
             EnsureMigrationOfContext<ExtractsContext>(serviceProvider);
 
-
-
-
-
             app.UseSignalR(
                 routes =>
                 {
@@ -423,7 +423,6 @@ namespace Dwapi
                 }
             );
 
-
             Mapper.Initialize(cfg =>
                 {
                     cfg.AddDataReaderMapping();
@@ -431,6 +430,7 @@ namespace Dwapi
                     cfg.AddProfile<TempMasterPatientIndexProfile>();
                     cfg.AddProfile<EmrProfiles>();
                     cfg.AddProfile<TempHtsExtractProfile>();
+                    cfg.AddProfile<MasterPatientIndexProfile>();
                 }
             );
 
@@ -449,6 +449,8 @@ namespace Dwapi
                 throw;
             }
 
+            stopWatch.Stop();
+
             Log.Debug(@"initializing Database [Complete]");
             Log.Debug(
                 @"---------------------------------------------------------------------------------------------------");
@@ -466,9 +468,7 @@ namespace Dwapi
 ");
             Log.Debug(
                 @"---------------------------------------------------------------------------------------------------");
-            Log.Debug("Dwapi started !");
-
-
+            Log.Debug($"Dwapi started in {stopWatch.ElapsedMilliseconds} ms");
         }
 
         public static void EnsureMigrationOfContext<T>(IServiceProvider app) where T : BaseContext

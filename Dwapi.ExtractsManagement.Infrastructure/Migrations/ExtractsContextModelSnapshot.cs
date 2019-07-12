@@ -674,11 +674,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.Destination.Hts.HTSClientExtract", b =>
                 {
-                    b.Property<int>("SiteCode");
-
-                    b.Property<int>("PatientPk");
-
-                    b.Property<int>("EncounterId");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ClientSelfTested");
 
@@ -694,6 +691,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<string>("Emr");
 
+                    b.Property<int>("EncounterId");
+
                     b.Property<string>("FacilityName");
 
                     b.Property<string>("FinalResultHTS");
@@ -703,8 +702,6 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<string>("Gender");
 
                     b.Property<string>("HtsNumber");
-
-                    b.Property<Guid>("Id");
 
                     b.Property<string>("KeyPop");
 
@@ -718,6 +715,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<string>("PatientDisabled");
 
+                    b.Property<int>("PatientPk");
+
                     b.Property<string>("PopulationType");
 
                     b.Property<bool?>("Processed");
@@ -725,6 +724,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<string>("Project");
 
                     b.Property<string>("QueueId");
+
+                    b.Property<int>("SiteCode");
 
                     b.Property<string>("Status");
 
@@ -756,9 +757,7 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<DateTime?>("VisitDate");
 
-                    b.HasKey("SiteCode", "PatientPk", "EncounterId");
-
-                    b.HasAlternateKey("Id");
+                    b.HasKey("Id");
 
                     b.ToTable("HtsClientExtracts");
                 });
@@ -1073,6 +1072,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<string>("Emr");
 
+                    b.Property<int>("ErrorType");
+
                     b.Property<int?>("FacilityId");
 
                     b.Property<string>("PatientID");
@@ -1108,6 +1109,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<DateTime>("DateExtracted");
 
                     b.Property<string>("Emr");
+
+                    b.Property<int>("ErrorType");
 
                     b.Property<int?>("FacilityId");
 
@@ -1191,6 +1194,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<string>("Emr");
 
+                    b.Property<int>("ErrorType");
+
                     b.Property<DateTime?>("ExitDate");
 
                     b.Property<string>("ExitReason");
@@ -1262,6 +1267,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<decimal?>("Duration");
 
                     b.Property<string>("Emr");
+
+                    b.Property<int>("ErrorType");
 
                     b.Property<DateTime?>("ExitDate");
 
@@ -1391,6 +1398,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<string>("Emr");
 
+                    b.Property<int>("ErrorType");
+
                     b.Property<int?>("FacilityId");
 
                     b.Property<string>("PatientID");
@@ -1460,6 +1469,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<DateTime>("DateExtracted");
 
                     b.Property<string>("Emr");
+
+                    b.Property<int>("ErrorType");
 
                     b.Property<int?>("FacilityId");
 
@@ -1615,6 +1626,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<string>("Emr");
 
+                    b.Property<int>("ErrorType");
+
                     b.Property<int?>("FacilityId");
 
                     b.Property<string>("FacilityName");
@@ -1684,6 +1697,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<string>("EducationLevel");
 
                     b.Property<string>("Emr");
+
+                    b.Property<int>("ErrorType");
 
                     b.Property<int?>("FacilityId");
 
@@ -1779,6 +1794,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<int?>("EnrollmentTest");
 
+                    b.Property<int>("ErrorType");
+
                     b.Property<int?>("FacilityId");
 
                     b.Property<string>("FacilityName");
@@ -1820,6 +1837,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<string>("Emr");
 
                     b.Property<int?>("EnrollmentTest");
+
+                    b.Property<int>("ErrorType");
 
                     b.Property<int?>("FacilityId");
 
@@ -1911,6 +1930,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<string>("Emr");
 
+                    b.Property<int>("ErrorType");
+
                     b.Property<DateTime?>("ExpectedReturn");
 
                     b.Property<int?>("FacilityId");
@@ -1956,6 +1977,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<decimal?>("Duration");
 
                     b.Property<string>("Emr");
+
+                    b.Property<int>("ErrorType");
 
                     b.Property<DateTime?>("ExpectedReturn");
 
@@ -2047,6 +2070,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<string>("Emr");
 
+                    b.Property<int>("ErrorType");
+
                     b.Property<DateTime?>("ExitDate");
 
                     b.Property<string>("ExitDescription");
@@ -2080,6 +2105,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<DateTime>("DateExtracted");
 
                     b.Property<string>("Emr");
+
+                    b.Property<int>("ErrorType");
 
                     b.Property<DateTime?>("ExitDate");
 
@@ -2161,6 +2188,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<string>("Emr");
 
+                    b.Property<int>("ErrorType");
+
                     b.Property<int?>("FacilityId");
 
                     b.Property<string>("FacilityName");
@@ -2240,6 +2269,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.Property<DateTime?>("EDD");
 
                     b.Property<string>("Emr");
+
+                    b.Property<int>("ErrorType");
 
                     b.Property<int?>("FacilityId");
 
@@ -2409,6 +2440,8 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.Property<int?>("EncounterId");
 
+                    b.Property<int>("ErrorType");
+
                     b.Property<string>("FacilityName");
 
                     b.Property<string>("FinalResultHTS");
@@ -2470,7 +2503,211 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
                     b.ToTable("TempHtsClientExtracts");
                 });
 
+            modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.Source.Hts.TempHTSClientExtractError", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("CheckError");
+
+                    b.Property<string>("ClientSelfTested");
+
+                    b.Property<string>("ClientTestedAs");
+
+                    b.Property<string>("CoupleDiscordant");
+
+                    b.Property<DateTime>("DateExtracted");
+
+                    b.Property<string>("DisabilityType");
+
+                    b.Property<DateTime?>("Dob");
+
+                    b.Property<string>("Emr");
+
+                    b.Property<int?>("EncounterId");
+
+                    b.Property<string>("FacilityName");
+
+                    b.Property<string>("FinalResultHTS");
+
+                    b.Property<string>("FinalResultsGiven");
+
+                    b.Property<string>("Gender");
+
+                    b.Property<string>("HtsNumber");
+
+                    b.Property<string>("KeyPop");
+
+                    b.Property<string>("KeyPopulationType");
+
+                    b.Property<string>("MaritalStatus");
+
+                    b.Property<int?>("MonthsLastTested");
+
+                    b.Property<string>("PatientConsented");
+
+                    b.Property<string>("PatientDisabled");
+
+                    b.Property<int?>("PatientPk");
+
+                    b.Property<string>("PopulationType");
+
+                    b.Property<string>("Project");
+
+                    b.Property<int?>("SiteCode");
+
+                    b.Property<string>("StrategyHTS");
+
+                    b.Property<string>("TBScreeningHTS");
+
+                    b.Property<DateTime?>("TestKitExpiryDate1");
+
+                    b.Property<string>("TestKitExpiryDate2");
+
+                    b.Property<string>("TestKitLotNumber1");
+
+                    b.Property<string>("TestKitLotNumber2");
+
+                    b.Property<string>("TestKitName1");
+
+                    b.Property<string>("TestKitName2");
+
+                    b.Property<string>("TestResultsHTS1");
+
+                    b.Property<string>("TestResultsHTS2");
+
+                    b.Property<string>("TestType");
+
+                    b.Property<string>("TestedBefore");
+
+                    b.Property<DateTime?>("VisitDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("vTempHTSClientExtractError");
+                });
+
+            modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.Source.Hts.TempHTSClientExtractErrorSummary", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ClientSelfTested");
+
+                    b.Property<string>("ClientTestedAs");
+
+                    b.Property<string>("CoupleDiscordant");
+
+                    b.Property<DateTime?>("DateGenerated");
+
+                    b.Property<DateTime?>("Dob");
+
+                    b.Property<int?>("EncounterId");
+
+                    b.Property<string>("Extract");
+
+                    b.Property<string>("FacilityName");
+
+                    b.Property<string>("Field");
+
+                    b.Property<string>("FinalResultHTS");
+
+                    b.Property<string>("FinalResultsGiven");
+
+                    b.Property<string>("Gender");
+
+                    b.Property<string>("HtsNumber");
+
+                    b.Property<string>("KeyPop");
+
+                    b.Property<string>("MaritalStatus");
+
+                    b.Property<int?>("MonthsLastTested");
+
+                    b.Property<int?>("PatientPK");
+
+                    b.Property<Guid>("RecordId");
+
+                    b.Property<int?>("SiteCode");
+
+                    b.Property<string>("StrategyHTS");
+
+                    b.Property<string>("Summary");
+
+                    b.Property<string>("TBScreeningHTS");
+
+                    b.Property<DateTime?>("TestKitExpiryDate1");
+
+                    b.Property<string>("TestKitExpiryDate2");
+
+                    b.Property<string>("TestKitLotNumber1");
+
+                    b.Property<string>("TestKitLotNumber2");
+
+                    b.Property<string>("TestKitName1");
+
+                    b.Property<string>("TestKitName2");
+
+                    b.Property<string>("TestResultsHTS1");
+
+                    b.Property<string>("TestResultsHTS2");
+
+                    b.Property<string>("TestType");
+
+                    b.Property<string>("TestedBefore");
+
+                    b.Property<string>("Type");
+
+                    b.Property<DateTime?>("VisitDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("vTempHTSClientExtractErrorSummary");
+                });
+
             modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.Source.Hts.TempHTSClientLinkageExtract", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CccNumber");
+
+                    b.Property<bool>("CheckError");
+
+                    b.Property<DateTime?>("DateEnrolled");
+
+                    b.Property<DateTime>("DateExtracted");
+
+                    b.Property<string>("Emr");
+
+                    b.Property<string>("EnrolledFacilityName");
+
+                    b.Property<int>("ErrorType");
+
+                    b.Property<string>("FacilityName");
+
+                    b.Property<string>("HtsNumber");
+
+                    b.Property<int?>("PatientPk");
+
+                    b.Property<DateTime?>("PhoneTracingDate");
+
+                    b.Property<DateTime?>("PhysicalTracingDate");
+
+                    b.Property<string>("Project");
+
+                    b.Property<DateTime?>("ReferralDate");
+
+                    b.Property<int?>("SiteCode");
+
+                    b.Property<string>("TracingOutcome");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TempHtsClientLinkageExtracts");
+                });
+
+            modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.Source.Hts.TempHTSClientLinkageExtractError", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -2507,10 +2744,128 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TempHtsClientLinkageExtracts");
+                    b.ToTable("vTempHTSClientLinkageExtractError");
+                });
+
+            modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.Source.Hts.TempHTSClientLinkageExtractErrorSummary", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CccNumber");
+
+                    b.Property<DateTime?>("DateEnrolled");
+
+                    b.Property<DateTime?>("DateGenerated");
+
+                    b.Property<string>("EnrolledFacilityName");
+
+                    b.Property<string>("Extract");
+
+                    b.Property<string>("FacilityName");
+
+                    b.Property<string>("Field");
+
+                    b.Property<string>("HtsNumber");
+
+                    b.Property<int?>("PatientPK");
+
+                    b.Property<DateTime?>("PhoneTracingDate");
+
+                    b.Property<DateTime?>("PhysicalTracingDate");
+
+                    b.Property<Guid>("RecordId");
+
+                    b.Property<DateTime?>("ReferralDate");
+
+                    b.Property<int?>("SiteCode");
+
+                    b.Property<string>("Summary");
+
+                    b.Property<string>("TracingOutcome");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("vTempHTSClientLinkageExtractErrorSummary");
                 });
 
             modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.Source.Hts.TempHTSClientPartnerExtract", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("Age");
+
+                    b.Property<string>("CccNumber");
+
+                    b.Property<bool>("CheckError");
+
+                    b.Property<string>("CurrentlyLivingWithIndexClient");
+
+                    b.Property<DateTime>("DateExtracted");
+
+                    b.Property<string>("Emr");
+
+                    b.Property<int>("ErrorType");
+
+                    b.Property<string>("FacilityName");
+
+                    b.Property<string>("HtsNumber");
+
+                    b.Property<string>("IpvScreeningOutcome");
+
+                    b.Property<string>("KnowledgeOfHivStatus");
+
+                    b.Property<DateTime?>("LinkDateLinkedToCare");
+
+                    b.Property<string>("Linked");
+
+                    b.Property<int?>("PartnerPatientPk");
+
+                    b.Property<int?>("PartnerPersonId");
+
+                    b.Property<int?>("PatientPk");
+
+                    b.Property<string>("PnsApproach");
+
+                    b.Property<string>("PnsConsent");
+
+                    b.Property<string>("Project");
+
+                    b.Property<string>("RelationshipToIndexClient");
+
+                    b.Property<string>("ScreenedForIpv");
+
+                    b.Property<string>("Sex");
+
+                    b.Property<int?>("SiteCode");
+
+                    b.Property<DateTime?>("Trace1Date");
+
+                    b.Property<string>("Trace1Outcome");
+
+                    b.Property<string>("Trace1Type");
+
+                    b.Property<DateTime?>("Trace2Date");
+
+                    b.Property<string>("Trace2Outcome");
+
+                    b.Property<string>("Trace2Type");
+
+                    b.Property<DateTime?>("Trace3Date");
+
+                    b.Property<string>("Trace3Outcome");
+
+                    b.Property<string>("Trace3Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TempHtsClientPartnerExtracts");
+                });
+
+            modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.Source.Hts.TempHTSClientPartnerExtractError", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -2579,7 +2934,83 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TempHtsClientPartnerExtracts");
+                    b.ToTable("vTempHTSClientPartnerExtractError");
+                });
+
+            modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.Source.Hts.TempHTSClientPartnerExtractErrorSummary", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("Age");
+
+                    b.Property<string>("CccNumber");
+
+                    b.Property<string>("CurrentlyLivingWithIndexClient");
+
+                    b.Property<DateTime?>("DateGenerated");
+
+                    b.Property<string>("Extract");
+
+                    b.Property<string>("FacilityName");
+
+                    b.Property<string>("Field");
+
+                    b.Property<string>("HtsNumber");
+
+                    b.Property<string>("IpvScreeningOutcome");
+
+                    b.Property<string>("KnowledgeOfHivStatus");
+
+                    b.Property<DateTime?>("LinkDateLinkedToCare");
+
+                    b.Property<string>("Linked");
+
+                    b.Property<int?>("PartnerPatientPk");
+
+                    b.Property<int?>("PartnerPersonId");
+
+                    b.Property<int?>("PatientPK");
+
+                    b.Property<string>("PnsApproach");
+
+                    b.Property<string>("PnsConsent");
+
+                    b.Property<Guid>("RecordId");
+
+                    b.Property<string>("RelationshipToIndexClient");
+
+                    b.Property<string>("ScreenedForIpv");
+
+                    b.Property<string>("Sex");
+
+                    b.Property<int?>("SiteCode");
+
+                    b.Property<string>("Summary");
+
+                    b.Property<DateTime?>("Trace1Date");
+
+                    b.Property<string>("Trace1Outcome");
+
+                    b.Property<string>("Trace1Type");
+
+                    b.Property<DateTime?>("Trace2Date");
+
+                    b.Property<string>("Trace2Outcome");
+
+                    b.Property<string>("Trace2Type");
+
+                    b.Property<DateTime?>("Trace3Date");
+
+                    b.Property<string>("Trace3Outcome");
+
+                    b.Property<string>("Trace3Type");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("vTempHTSClientPartnerExtractErrorSummary");
                 });
 
             modelBuilder.Entity("Dwapi.ExtractsManagement.Core.Model.ValidationError", b =>

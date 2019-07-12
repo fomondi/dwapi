@@ -4,9 +4,9 @@
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-    <Version>2.2.5</Version>
+    <Version>2.2.8</Version>
     <Company>Palladium Group</Company>
-    <Authors>Brian Mwasi, Danson Koske</Authors>
+    <Authors>Davidson Gikandi, Danson Koske, Mwenda Gitonga, Brian Mwasi, Teddy Brian</Authors>
     <RepositoryUrl>https://github.com/palladiumkenya/DWAPI</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <NeutralLanguage>en-KE</NeutralLanguage>
@@ -15,8 +15,13 @@ Added payload compression on sending of dwah extracts
 Bached sending and await to 50 at a time
 </PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
+    <Description>Data Warehouse API Client. Transmit data from EMRs (IQCare, KenyaEMR, AMRS, ECARE) to NASCOP</Description>
+    <Copyright>Palladium Group</Copyright>
     <!--<PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>-->
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="client-src\settings\model\data-metrics.ts" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="logs" />
@@ -41,6 +46,7 @@ Bached sending and await to 50 at a time
     <PackageReference Include="StructureMap.Microsoft.DependencyInjection" Version="1.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
     <PackageReference Include="Hangfire" Version="1.6.21" />
+    <PackageReference Include="X.PagedList" Version="7.6.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dwapi.ExtractsManagement.Infrastructure\Dwapi.ExtractsManagement.Infrastructure.csproj" />
@@ -50,5 +56,8 @@ Bached sending and await to 50 at a time
     <ProjectReference Include="..\Dwapi.SharedKernel\Dwapi.SharedKernel.csproj" />
     <ProjectReference Include="..\Dwapi.UploadManagement.Core\Dwapi.UploadManagement.Core.csproj" />
     <ProjectReference Include="..\Dwapi.UploadManagement.Infrastructure\Dwapi.UploadManagement.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="client-src\settings\model\data-metrics.ts" />
   </ItemGroup>
 </Project>
