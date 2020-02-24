@@ -5,7 +5,10 @@ namespace Dwapi.ExtractsManagement.Infrastructure.Migrations
     public partial class Alter_Lab_View : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
-        { 
+        {
+	        migrationBuilder.Sql(@"alter table Validator convert to character set utf8 collate utf8_unicode_ci;");
+	        migrationBuilder.Sql(@"alter table ValidationError convert to character set utf8 collate utf8_unicode_ci;");
+	        migrationBuilder.Sql(@"alter table TempPatientLaboratoryExtracts convert to character set utf8 collate utf8_unicode_ci;");
             migrationBuilder.Sql(@"
 	            ALTER view vTempPatientLaboratoryExtractError as
 	            SELECT        *
