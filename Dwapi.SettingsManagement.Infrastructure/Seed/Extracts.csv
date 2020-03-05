@@ -441,7 +441,7 @@ join concept c on c.concept_id = l.lab_test
 left outer join concept_name cn2 on cn2.concept_id=l.test_result and cn2.concept_name_type='FULLY_SPECIFIED'
 and cn2.locale='en' where d.unique_patient_no is not null"|dwhstage|0|PatientLabExtract|5|a6221aa4-0e85-11e8-ba89-0ed5f89f718b
 3F742EB0-5856-E811-8E16-9CB6D0DA773C|Patient Pharmacy|NDWH|a6221856-0e85-11e8-ba89-0ed5f89f718b|"select distinct
- '' AS Provider,'' AS SatelliteName, 0 AS FacilityId, d.unique_patient_no as PatientID,
+'' AS Provider,'' AS SatelliteName, 0 AS FacilityId, d.unique_patient_no as PatientID,
 d.patient_id as PatientPK,
 (select name from location
 where location_id in (select property_value
@@ -453,36 +453,44 @@ from global_property
 where property='kenyaemr.defaultLocation') and attribute_type_id=1) as siteCode,
 ph.visit_id as VisitID,
 -- if(cn2.name is not null, cn2.name,cn.name) as Drug,
-case 
-	when is_arv=1 then drg.drugreg 
-	else if(cn2.name is not null, cn2.name,cn.name) END  as Drug,
+case
+when is_arv=1 then ph.drugreg
+else if(cn2.name is not null, cn2.name,cn.name) END as Drug,
 ph.visit_date as DispenseDate,
-duration,
-duration as PeriodTaken,
+ph.duration AS duration,
+ph.duration AS PeriodTaken,
 fup.next_appointment_date as ExpectedReturn,
- 'KenyaEMR' as Emr,
- 'Kenya HMIS II' as Project,
- CASE WHEN is_arv=1 THEN 'ARV'
-	  WHEN is_ctx=1 OR is_dapsone= 1 THEN 'Prophylaxis' END AS TreatmentType,
- '' AS RegimenLine,
- CASE WHEN is_ctx=1 THEN 'CTX'
-	  WHEN is_dapsone =1  THEN 'DAPSON' END AS ProphylaxisType,
+'KenyaEMR' as Emr,
+'Kenya HMIS II' as Project,
+CASE WHEN is_arv=1 THEN 'ARV'
+WHEN is_ctx=1 OR is_dapsone= 1 THEN 'Prophylaxis' END AS TreatmentType,
+ph.RegimenLine,
+CASE WHEN is_ctx=1 THEN 'CTX'
+WHEN is_dapsone =1 THEN 'DAPSON' END AS ProphylaxisType,
 CAST(now() as Date) AS DateExtracted
-from kenyaemr_etl.etl_pharmacy_extract ph
-left join 
-(select  patient_id, visit_id,visit_date,encounter_id,
-replace(replace(replace(group_concat(cn2.name SEPARATOR '/'),'/','+'),'LPV+R','LPV/R'),'ATV+R','ATV/R') as drugreg from kenyaemr_etl.etl_pharmacy_extract  ph
-left outer join concept_name cn2 on cn2.concept_id=ph.drug  and cn2.concept_name_type='SHORT'
-and cn2.locale='en' where is_arv = '1'
-GROUP BY patient_id, visit_id,visit_date,encounter_id) drg ON drg.patient_id=ph.patient_id AND drg.visit_id=ph.visit_id AND drg.visit_date=ph.visit_date AND drg.encounter_id =ph.encounter_id
+from (SELECT * FROM (
+select patient_id, visit_id,visit_date,encounter_id,drug,is_arv, is_ctx,is_dapsone,drug_name as drugreg,frequency,
+'' as DispenseDate,duration, duration PeriodTaken,
+''ExpectedReturn, CASE WHEN is_ctx=1 OR is_dapsone= 1 THEN 'Prophylaxis' END AS TreatmentType,'' as RegimenLine,
+CASE WHEN is_ctx=1 THEN 'CTX'
+WHEN is_dapsone =1 THEN 'DAPSON' END AS ProphylaxisType from kenyaemr_etl.etl_pharmacy_extract ph
+left outer join concept_name cn2 on cn2.concept_id=ph.drug and cn2.concept_name_type='SHORT'
+and cn2.locale='en' where is_ctx=1 OR is_dapsone= 1
+GROUP BY patient_id, visit_id,visit_date,encounter_id
+UNION
+
+SELECT patient_id,''visit_id,visit_date,encounter_id,regimen drug,1 as is_arv, 0 as is_ctx, 0 as is_dapsone, regimen_name as drugreg, '' frequency, date_started as DispenseDate,''duration,''PeriodTaken,
+''ExpectedReturn, 'ARV' AS TreatmentType,regimen_line as RegimenLine,NULL as ProphylaxisType FROM kenyaemr_etl.etl_drug_event
+GROUP BY patient_id, visit_id,visit_date,encounter_id
+)A )ph
 join kenyaemr_etl.etl_patient_demographics d on d.patient_id=ph.patient_id
-left outer join concept_name cn on cn.concept_id=ph.drug  and cn.concept_name_type='FULLY_SPECIFIED'
+left outer join concept_name cn on cn.concept_id=ph.drug and cn.concept_name_type='FULLY_SPECIFIED'
 and cn.locale='en'
-left outer join concept_name cn2 on cn2.concept_id=ph.drug  and cn2.concept_name_type='SHORT'
+left outer join concept_name cn2 on cn2.concept_id=ph.drug and cn2.concept_name_type='SHORT'
 and cn.locale='en'
 left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.encounter_id=ph.encounter_id
 and fup.patient_id=ph.patient_id
-where unique_patient_no is not null  and (is_arv=1 OR is_ctx=1 OR is_dapsone =1 )
+where unique_patient_no is not null and (is_arv=1 OR is_ctx=1 OR is_dapsone =1 ) and drugreg is not null
 order by ph.patient_id,ph.visit_date;"|dwhstage|0|PatientPharmacyExtract|6|a6221aa4-0e85-11e8-ba89-0ed5f89f718b
 40742EB0-5856-E811-8E16-9CB6D0DA773C|Patient Visit|NDWH|a6221856-0e85-11e8-ba89-0ed5f89f718b|"select distinct
 '' AS SatelliteName, 0 AS FacilityId, d.unique_patient_no as PatientID,
@@ -699,7 +707,8 @@ FROM [dbo].[tmp_PatientMaster] a
 )Y
 ON
 Y.Ptn_Pk = X.Ptn_Pk AND Y.Serial= X.Serial"|MPI|1|MasterPatientIndex|1|a6221983-0e85-11e8-ba89-0ed5f89f718b
-48742EB0-6656-E811-8E16-9CB6D0DA773C|Master Patient Index|CBS|a6221856-0e85-11e8-ba89-0ed5f89f718b|"SELECT DISTINCT
+48742EB0-6656-E811-8E16-9CB6D0DA773C|Master Patient Index|CBS|a6221856-0e85-11e8-ba89-0ed5f89f718b|"
+SELECT DISTINCT
 -- -----Demographics
 X.Ptn_Pk,
 X.PatientPK,
@@ -884,12 +893,12 @@ id.identifier AS Serial
 
 FROM kenyaemr_datatools.patient_demographics a
 INNER JOIN patient_identifier id ON a.patient_id = id.patient_id AND id.identifier_type = (SELECT patient_identifier_type_id FROM openmrs.patient_identifier_type
-where name ='Unique Patient Number')
-inner join (
+where name ='OpenMRS ID')
+left join (
 SELECT  c.patient_id,
 c.encounter_id, treatment_supporter_telephone, entry_point , treatment_supporter_address, date_confirmed_hiv_positive 
 from kenyaemr_datatools.hiv_enrollment  c
-INNER JOIN
+left JOIN
     (
         SELECT patient_id, MAX(encounter_id) max_encounter_id
         FROM kenyaemr_datatools.hiv_enrollment
@@ -915,11 +924,11 @@ a.patient_id as Ptn_Pk,
 id.identifier AS Serial
 FROM kenyaemr_datatools.patient_demographics a
 INNER JOIN patient_identifier id ON a.patient_id = id.patient_id AND id.identifier_type = (SELECT patient_identifier_type_id FROM openmrs.patient_identifier_type
-where name ='Unique Patient Number') 
+where name ='OpenMRS ID')
 
 )Y
 ON
-Y.Ptn_Pk = X.Ptn_Pk AND Y.Serial= X.Serial
+Y.Ptn_Pk = X.Ptn_Pk AND Y.Serial= X.Serial 
 "|MPI|1|MasterPatientIndex|1|a6221aa4-0e85-11e8-ba89-0ed5f89f718b
 329bfbf4-d404-4dfd-88eb-6fb398c5f449|Patient Adverse Events|NDWH|a62216ee-0e85-11e8-ba89-0ed5f89f718b|"SELECT adv.PatientID,
        adv.PatientPK,
@@ -1319,33 +1328,44 @@ r.ArtStartDate as ReportedStartARTDate
   inner join patient pat on pat.ptn_pk=r.ptn_pk
   left join Referral ref on pat.personid=ref.personid"|DWHStage|1|HtsClientLinkage|3|A6221983-0E85-11E8-BA89-0ED5F89F718B
   
-8578b21e-c34b-11e9-9cb5-2a2ae2dbcce4|Hts Client Linkage|HTS|A6221856-0E85-11E8-BA89-0ED5F89F718B|"select distinct a.patient_id as PatientPK, SC.value_reference AS SiteCode,
+8578b21e-c34b-11e9-9cb5-2a2ae2dbcce4|Hts Client Linkage|HTS|A6221856-0E85-11E8-BA89-0ED5F89F718B|"select distinct a.patient_id as PatientPK,
+SC.value_reference AS SiteCode,
 SN.name as FacilityName,
 'KenyaEMR' as Emr,
 'Kenya HMIS II' AS Project,
 id.identifier AS HtsNumber,
 ref.date_to_enrol as DatePrefferedToBeEnrolled,
 ref.facility_referred_to as FacilityReferredTo,
-htsrl.provider_handed_to as HandedOverTo,
+a.provider_handed_to as HandedOverTo,
 NULL HandedOverToCadre,
-htsrl.facility_linked_to as EnrolledFacilityName,
+a.facility_linked_to as EnrolledFacilityName,
 ref.visit_date as ReferralDate,
-htsrl.enrollment_date as DateEnrolled,
-htsrl.ccc_number as ReportedCCCNumber,
-htsrl.art_start_date as ReportedStartARTDate from (
-select patient_id from kenyaemr_etl.etl_hts_referral_and_linkage htsrl union select patient_id from kenyaemr_etl.etl_hts_referral t) a
-left join kenyaemr_etl.etl_hts_referral_and_linkage htsrl on a.patient_id=htsrl.patient_id
+a.enrollment_date as DateEnrolled,
+a.ccc_number as ReportedCCCNumber,
+a.art_start_date as ReportedStartARTDate
+from (SELECT Distinct patient_id, encounter_id,ccc_number,enrollment_date,
+art_start_date,provider_handed_to,facility_linked_to,encounter_location FROM
+(SELECT DISTINCT htsrl.patient_id, encounter_id,ccc_number,enrollment_date,
+art_start_date,provider_handed_to,facility_linked_to,encounter_location
+FROM kenyaemr_etl.etl_hts_referral_and_linkage htsrl
+UNION ALL
+SELECT DISTINCT t.patient_id,t.encounter_id,unique_patient_no ccc_number,e.visit_date DateEnrolled,
+ar.art_start_date,provider_handed_to,facility_linked_to,t.encounter_location
+FROM kenyaemr_etl.etl_hts_test t
+INNER JOIN kenyaemr_etl.etl_patient_demographics pt ON pt.patient_id=t.patient_id AND pt.voided=0
+INNER JOIN kenyaemr_etl.etl_hiv_enrollment e ON e.patient_id=t.patient_id AND e.voided=0
+LEFT JOIN kenyaemr_etl.etl_hts_referral_and_linkage l ON l.patient_id=t.patient_id
+LEFT JOIN (SELECT patient_id,min(date_started) as art_start_date FROM kenyaemr_etl.etl_drug_event
+group by patient_id)ar on ar.patient_id=t.patient_id
+WHERE t.test_type = 1 AND t.final_test_result='Positive' AND t.voided=0 AND l.patient_id IS NULL)a
+) a
 left join kenyaemr_etl.etl_hts_referral ref on a.patient_id=ref.patient_id
-LEFT JOIN
-location_attribute SC ON (SC.location_id = htsrl.encounter_location or SC.location_id=ref.encounter_location ) AND SC.attribute_type_id=1
-LEFT JOIN
-location SN ON (SN.location_id =htsrl.encounter_location or SN.location_id =ref.encounter_location )
-LEFT JOIN
-patient_identifier id ON (id.patient_id = htsrl.patient_id or id.patient_id = ref.patient_id ) AND id.identifier_type = (select patient_identifier_type_id
+LEFT JOIN location_attribute SC ON (SC.location_id = a.encounter_location or SC.location_id=ref.encounter_location ) AND SC.attribute_type_id=1
+LEFT JOIN location SN ON (SN.location_id =a.encounter_location or SN.location_id =ref.encounter_location )
+LEFT JOIN patient_identifier id ON (id.patient_id = a.patient_id or id.patient_id = ref.patient_id ) AND id.identifier_type = (select patient_identifier_type_id
 from patient_identifier_type
 where name='OpenMRS ID')
-LEFT JOIN
-kenyaemr_etl.etl_hiv_enrollment EN ON EN.patient_id =htsrl.patient_id
+LEFT JOIN kenyaemr_etl.etl_hiv_enrollment EN ON EN.patient_id =a.patient_id
 where a.patient_id in (select patient_id from kenyaemr_etl.etl_hts_test);"|DWHStage|1|HtsClientLinkage|3|A6221AA4-0E85-11E8-BA89-0ED5F89F718B
   
 8578b5a2-c34b-11e9-9cb5-2a2ae2dbcce4|Hts Test Kits|HTS|A62216EE-0E85-11E8-BA89-0ED5F89F718B|"select distinct p.PatientPK,
